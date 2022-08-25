@@ -1,0 +1,528 @@
+{% extends 'base.html' %}
+
+{% block title %}Lensmart | products{% endblock title %}
+
+{% block body %}
+    <div class="cover">
+        <div class="w3-top">
+            <div class="w3-bar w3-black w3-card container-fluid" id="myNavbar">
+                <a class="navbar-brand" href="/index">
+                    <img src="/static/images/logo.png" alt="" width="90" height="50" class="d-inline-block align-text-top"></a>
+                <!-- Right-sided navbar links -->
+                <div class="w3-right w3-hide-small">
+                    <a href="/index" class="w3-bar-item w3-button"><i class="fa fa-home"></i> HOME</a>
+                    <a href="/index#contact" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i> CONTACT</a> 
+                    {% if user.is_authenticated %}
+                    <div class="w3-dropdown-hover">
+                        <button class="w3-button"><i class="fa fa-user"></i>&nbsp {{request.user|upper}}</button>
+                        <div class="w3-dropdown-content w3-bar-block w3-card-4">
+                            <a href="/cart" class="w3-bar-item w3-button">Cart(<span id="cart1">0</span>)</a>
+                            <a href="/logout" class="w3-bar-item w3-button">Logout</a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="/login" class="w3-bar-item w3-button"><i class="fa fa-user"></i> ACCOUNT</a>                    
+                    {% endif %}
+                </div>
+                <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+                <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium"
+                    onclick="w3_open()">
+                    <i class="fa fa-bars"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Sidebar on small screens when clicking the menu icon -->
+        <nav class="w3-sidebar w3-bar-block w3-black w3-card w3-animate-left w3-hide-medium w3-hide-large"
+            style="display:none" id="mySidebar">
+            <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button w3-large w3-padding-16">Close
+                X</a>
+            <a href="/index" onclick="w3_close()" class="w3-bar-item w3-button">HOME</a>
+            <a href="/index#contact" onclick="w3_close()" class="w3-bar-item w3-button">CONTACT</a>
+            {% if user.is_authenticated %}
+            <a href="/cart" onclick="w3_close()" class="w3-bar-item w3-button">CART (<span id="cart">0</span>)</a>
+            <a href="/logout" onclick="w3_close()" class="w3-bar-item w3-button">LOGOUT</a>
+            {% else %}
+            <a href="/login" onclick="w3_close()" class="w3-bar-item w3-button">ACCOUNT</a>
+            {% endif %}
+        </nav>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class=" alert alert-{{ message.tags }} alert-dismissible fade show mt-16 mb-0" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        
+        <p style="text-align: justify;">
+            <a title="Buy Independence Day Eyeglasses " href="#about"><img
+                    title="Buy Stylish Independence Day Glasses at Eyeglasses PK" src="/static/images/web.JPG"
+                    alt="Buy Stylish Independence Day Glasses at Eyeglasses PK">
+            </a>
+        </p>
+        <!-- Eyeglasses category banner -->
+        <div class="w3-container" style="padding:0px 16px" id="products">
+            <div class="w3-row-padding" style="margin-top:64px">
+                <div class="w3-col l3 m6 pt-2 pb-2">
+                    <a href="/products#men-glasses">
+                        <img src="/static/images/men.png" style="width:100%" class="w3-hover-opacity" alt="men glasses">
+                    </a>
+                </div>
+                <div class="w3-col l3 m6 pt-2 pb-2">
+                    <a href="/products#women-glasses">
+                        <img src="/static/images/women.png" style="width:100%" class="w3-hover-opacity" alt="women glasses">
+                    </a>
+                </div>
+                <div class="w3-col l3 m6 pt-2 pb-2">
+                    <a href="/products#kid-glasses">
+                        <img src="/static/images/kids.png" style="width:100%" class="w3-hover-opacity" alt="kids glasses">
+                    </a>
+                </div>
+                <div class="w3-col l3 m6 pt-2 pb-2">
+                    <a href="/products#sun-glasses">
+                        <img src="/static/images/sunglasses.png" style="width:100%" class="w3-hover-opacity" alt="Sunglasses">
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- all products display -->
+        
+        <section id="eyeglasses" class="price text-gray-600 body-font">
+            <h1 class="w3-center w3-large"><b>EYEGLASSES</b></h1>
+            <div class="container px-3 py-3 mx-auto">
+                <div class="flex flex-wrap -m-4">
+                    {% for i in products %}
+                    <div class="lg:w-1/3 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-fit">
+                            <img alt="ecommerce" class=" object-center border w-full h-full block" id="img{{i.product_id}}"
+                                src='/media/{{i.image}}' >
+                        </a>
+                        <div class="mt-4">
+                            <h2 class="text-gray-900 title-font text-lg font-medium" ><b id="name{{i.product_id}}" >{{i.product_name}}</b></h2>
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">{{i.category}}</h3>
+                            <p class="mt-1 p-desc">{{i.desc}}</p>
+                            <p class="mt-1" id="price{{i.product_id}}">Rs.{{i.price}}</p>
+                        </div>
+                    
+                        <br>
+                        {% if i.stock > 0 %}
+                        <button id= "{{i.product_id}}" class="cart w3-button w3-round-xlarge w3-medium w3-blue w3-margin-bottom w3-hover-light-blue w3-ripple"
+                            href="#" target="_blank">Add to Cart</button>
+                        {% else %}
+                        <button id= "pr{{i.product_id}}" class="w3-disabled cart w3-button w3-round-xlarge w3-medium w3-blue w3-margin-bottom "
+                             target="_blank"> Out of Stock</button>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+        
+        {% comment %} <section id="women-glasses" class="price text-gray-600 body-font" style="padding: 100px;">
+            <h2 class="w3-center w3-large"><b>WOMEN CATEGORIES</b></h2>
+            <div class="container px-3 py-20 mx-auto">
+                <div class="flex flex-wrap -m-4">
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/420x260">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The Catalyzer</h2>
+                            <p class="mt-1">$16.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/421x261">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Shooting Stars</h2>
+                            <p class="mt-1">$21.15</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/422x262">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Neptune</h2>
+                            <p class="mt-1">$12.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/423x263">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The 400 Blows</h2>
+                            <p class="mt-1">$18.40</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/424x264">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The Catalyzer</h2>
+                            <p class="mt-1">$16.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/425x265">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Shooting Stars</h2>
+                            <p class="mt-1">$21.15</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/427x267">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Neptune</h2>
+                            <p class="mt-1">$12.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/428x268">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The 400 Blows</h2>
+                            <p class="mt-1">$18.40</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="kid-glasses" class="price text-gray-600 body-font">
+            <h2 class="w3-center w3-large"><b>KIDS CATEGORIES</b></h2>
+            <div class="container px-3 py-20 mx-auto">
+                <div class="flex flex-wrap -m-4">
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/420x260">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The Catalyzer</h2>
+                            <p class="mt-1">$16.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/421x261">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Shooting Stars</h2>
+                            <p class="mt-1">$21.15</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/422x262">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Neptune</h2>
+                            <p class="mt-1">$12.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/423x263">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The 400 Blows</h2>
+                            <p class="mt-1">$18.40</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/424x264">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The Catalyzer</h2>
+                            <p class="mt-1">$16.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/425x265">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Shooting Stars</h2>
+                            <p class="mt-1">$21.15</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/427x267">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Neptune</h2>
+                            <p class="mt-1">$12.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/428x268">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The 400 Blows</h2>
+                            <p class="mt-1">$18.40</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="sun-glasses" class="price text-gray-600 body-font">
+            <h1 class="w3-center w3-large"><b>SUNGLASSES</b></h1>
+            <div class="container px-3 py-20 mx-auto">
+                <div class="flex flex-wrap -m-4">
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/420x260">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The Catalyzer</h2>
+                            <p class="mt-1">$16.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/421x261">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Shooting Stars</h2>
+                            <p class="mt-1">$21.15</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/422x262">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Neptune</h2>
+                            <p class="mt-1">$12.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/423x263">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The 400 Blows</h2>
+                            <p class="mt-1">$18.40</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/424x264">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The Catalyzer</h2>
+                            <p class="mt-1">$16.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/425x265">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Shooting Stars</h2>
+                            <p class="mt-1">$21.15</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/427x267">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">Neptune</h2>
+                            <p class="mt-1">$12.00</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                    <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+                        <a class="block relative h-48 rounded overflow-hidden">
+                            <img alt="ecommerce" class=" object-center w-full h-full block"
+                                src="https://dummyimage.com/428x268">
+                        </a>
+                        <div class="mt-4">
+                            <h3 class="text-gray-500 text-xs tracking-widest title-font mb-1">CATEGORY</h3>
+                            <h2 class="text-gray-900 title-font text-lg font-medium">The 400 Blows</h2>
+                            <p class="mt-1">$18.40</p>
+                        </div>
+                        <br>
+                        <a class="w3-button w3-round-xlarge w3-large w3-blue w3-margin-bottom w3-hover-light-blue"
+                            href="/order" target="_blank">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        </section> {% endcomment %}
+        
+    </div>
+{% endblock body %}
+{% block js %}
+<script>
+
+    var products = document.getElementsByClassName("cart");
+    
+    for (let i = 0; i < products.length; i++) {
+        var item = "pr"+products[i].getAttribute("id");
+        console.log(item);
+        if (cart[item]!=undefined){
+            console.log("inside if");
+            products[i].innerHTML= "Remove";
+            }
+        }
+        //jQuery starts here//
+        $('.cart').click(function(){
+            
+            console.log("clicked")            
+            var id = this.id.toString();
+            var product_key = "pr"+id ;
+            var name = document.getElementById("name"+id).innerHTML;
+            var price = document.getElementById("price"+id).innerHTML;
+            var img = document.getElementById("img"+id).getAttribute("src");
+            console.log(price);
+
+            if(this.innerHTML=="Remove"){
+                delete(cart[product_key]);
+                this.innerHTML= "Add to Cart";
+            }
+            else{
+                cart[product_key]=[id,name,price,img];
+                this.innerHTML= "Remove";
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            document.getElementById('cart').innerHTML = Object.keys(cart).length;
+            document.getElementById('cart1').innerHTML = Object.keys(cart).length;
+
+        });
+
+</script>
+
+{% endblock js %}
+
