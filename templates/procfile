@@ -1,1 +1,0 @@
-web: gunicorn Lensmart.wsgi --log-file -
