@@ -1,1 +1,1 @@
-web: gunicorn lensmart.wsgi --log-file -
+web: gunicorn LENSMART.wsgi --log-file -
