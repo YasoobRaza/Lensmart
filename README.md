@@ -2,6 +2,11 @@
 
 Lensmart is an e-commerce website that focuses on selling eyewear products. It has various features such as user login, signup, admin login, purchasing products, and cart facilities.
 
+## Quick Demo
+
+https://user-images.githubusercontent.com/90134146/224469677-3d07bc11-ace6-4bdb-8382-733990a0e41b.mp4
+
+
 ## Features
 
 - User login and signup: Users can create an account, log in, and manage their profile and order history.
